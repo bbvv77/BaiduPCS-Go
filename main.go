@@ -3,6 +3,16 @@ package main
 import (
 	"encoding/hex"
 	"fmt"
+	"os"
+	"os/exec"
+	"path"
+	"path/filepath"
+	"runtime"
+	"sort"
+	"strconv"
+	"strings"
+	"unicode"
+
 	"github.com/iikira/BaiduPCS-Go/baidupcs"
 	"github.com/iikira/BaiduPCS-Go/internal/pcscommand"
 	"github.com/iikira/BaiduPCS-Go/internal/pcsconfig"
@@ -22,15 +32,6 @@ import (
 	"github.com/olekukonko/tablewriter"
 	"github.com/peterh/liner"
 	"github.com/urfave/cli"
-	"os"
-	"os/exec"
-	"path"
-	"path/filepath"
-	"runtime"
-	"sort"
-	"strconv"
-	"strings"
-	"unicode"
 )
 
 const (
@@ -1368,8 +1369,18 @@ func main() {
 							cli.ShowCommandHelp(c, c.Command.Name)
 							return nil
 						}
-						pcscommand.RunShareSet(c.Args(), nil)
+						so := &baidupcs.ShareOption{
+							Password: c.String("p"),
+						}
+						pcscommand.RunShareSet(c.Args(), so)
 						return nil
+					},
+					Flags: []cli.Flag{
+						cli.StringFlag{
+							Name:  "p",
+							Usage: "设置分享的密码",
+							Value: "1111",
+						},
 					},
 				},
 				{
